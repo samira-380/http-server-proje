@@ -1,3 +1,4 @@
+// Gün 4 - Ham HTTP sunucusu kurulumu
 const http = require('http');
 
 const server = http.createServer((req, res) => {
