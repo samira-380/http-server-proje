@@ -76,3 +76,8 @@ fs.readFile('package.json', 'utf8', (hata, veri) => {
   console.log('Versiyon:', obje.version);
 });
 
+// require ile ES6 import arasındaki fark ne?
+//require, kod satır satır çalışırken, o satıra geldiği an modülü yükler. İstersen koşullu bile yapabilirsin, import ifadeleri kod çalışmadan önce taranır ve modül bağlantıları önceden kurulur. Bu yüzden koşullu kullanamazsın.
+
+//node_modules klasörü neden .gitignore'a eklenir?
+//node_modules klasörü, projenize yüklediğiniz kütüphaneleri ve o kütüphanelerin çalışmak için ihtiyaç duyduğu diğer alt kütüphaneleri (bağımlılıkları) içerir. Küçük bir projede bile bu klasörün boyutu yüzlerce megabayta (MB) ve on binlerce küçük dosyaya ulaşabilir. Bu kadar büyük bir klasörü Git ile takip etmek ve GitHub/GitLab gibi platformlara yüklemeye çalışmak (push/pull işlemleri) hem çok uzun sürer hem de internet kotanızı ve disk alanınızı gereksiz yere harcanır
