@@ -9,9 +9,9 @@
 // /transactions   → tüm işlemler
 // /transactions/12 → id'si 12 olan işlem
 
-//Sonra bu kaynaklara ne yapmak istediğini HTTP method'u ile söylersin (aşağıda detaylı). --> GET /users/5 , DELETE /users/5
+//Sonra bu kaynaklara ne yapmak istediğini HTTP method'u ile söylersin  --> GET /users/5 , DELETE /users/5
 
-// REST'in 4 önemli prensibi (görselde yoktu ama kritik)
+// REST'in 4 önemli prensibi 
 // Stateless (durumsuz): Sunucu, senin önceki isteğini hatırlamaz. Her istek kendi başına yeterli bilgiyi taşımalı (örneğin token'ı her seferinde göndermen gerekir). Sunucu "bu adam az önce login oldu" diye bir hafıza tutmaz.
 // Client-Server ayrımı: Frontend (client) ve backend (server) birbirinden bağımsızdır. Biri değişse diğeri bozulmamalı.
 // Uniform Interface (tekdüze arayüz): Her kaynağa aynı mantıkla (URI + method) erişilir. Kullanıcılar için de, ürünler için de aynı kurallar geçerli.
@@ -56,7 +56,7 @@
 
 // REST vs SOAP
 
-//SOAP(en: Simple Access Protocol ,tr: Basit Nesne Erişim Protokolu) en temel anlamda, internet üzerinden küçük miktarda bilgileri yada mesajları aktarma protokoludur. SOAP mesajları XML formatındadırlar ve genellikle HTTP(Hyper Text Transfer Protocol) protokolu(bazende TCP/IP) kullanılarak gönderilirler. SOAP ,XML tabanlı kullanıma mecbur bırakır. Bu konuda esnek değildir.
+//SOAP(Simple Access Protocol) en temel anlamda, internet üzerinden küçük miktarda bilgileri yada mesajları aktarma protokoludur. SOAP mesajları XML formatındadırlar ve genellikle HTTP(Hyper Text Transfer Protocol) protokolu(bazende TCP/IP) kullanılarak gönderilirler. SOAP ,XML tabanlı kullanıma mecbur bırakır. Bu konuda esnek değildir.
 
 //SOAP ve REST, API tasarımına ilişkin iki farklı yaklaşımdır. SOAP yaklaşımı son derece yapılandırılmıştır ve XML veri biçimini kullanır. REST daha esnektir ve uygulamaların birden fazla biçimde veri alışverişi yapmasına olanak tanır. 
 
@@ -87,6 +87,7 @@
 // Body: { "amount": 250, "category": "market" }
 
 // Veri filtrelemek/aramak için query, hangi kayıt sorusuna cevap için route param, yeni veri göndermek/güncellemek için body.
+
 
 // .env Dosyası ve Ortam Değişkenleri:
 

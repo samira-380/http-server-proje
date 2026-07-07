@@ -20,7 +20,7 @@ Dokümanlar collection (koleksiyon) içinde gruplanır — SQL'deki "tablo" kavr
 
 //NoSQL Neden Bu Adı Alıyor? (Görselde "araştır" denmiş)
 
-"NoSQL" ismi biraz yanıltıcı — "SQL kullanmıyoruz" değil, daha doğrusu "Not Only SQL" (sadece SQL değil) anlamına gelir. Temel farklar:
+"Not Only SQL" (sadece SQL değil) anlamına gelir. Temel farklar:
 
                        İlişkisel (SQL)                       MongoDB (NoSQL)
 Şema             Katı, önceden tanımlı                Esnek, doküman bazında değişebilir
