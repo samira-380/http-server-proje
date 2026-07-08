@@ -1,0 +1,39 @@
+Gün 10 — Category + Summary
+
+ GET /summary endpoint'i ne işe yarıyor?
+Düşün ki kullanıcı dashboard'a girdi, şunu görmek istiyor:
+
+"Toplam ne kadar gelirim oldu?"
+"Toplam ne kadar gider yaptım?"
+"Bakiyem ne kadar?" (gelir - gider)
+"Hangi kategoride ne kadar harcadım?" (yemek: 500 TL, ulaşım: 200 TL gibi)
+
+Bunların hepsini tek bir istekte dönen bir endpoint yazacağız: GET /summary
+
+tüm transaction'ları çekip JavaScript'te mi hesaplarsın, yoksa bu hesaplamayı veritabanına mı bırakırsın?
+
+Tüm veriyi çek, JavaScript'te hesaplarsak tüm verileri atlastan çekmek gerekir bu da programın verimliliğini düşürür. bu hem yavaştır hem de sunucunun hafızasını gereksiz yere doldurur. Bunu verştabanında bırakırsak atlastan sadece sonucu çekeriz.
+
+MongoDB'de aggregation pipeline kavramını araştır
+
+MongoDB'de Aggregation Pipeline (Toplama İşlem Hattı), belgeleri bir dizi aşamadan (stage) geçirerek verileri filtreleyen, gruplayan, dönüştüren ve analiz eden güçlü bir veri işleme çerçevesidir. Veritabanı içindeki karmaşık işlemleri SQL'deki GROUP BY ve JOIN mantığına benzer şekilde, ancak esnek belge yapısıyla gerçekleştirmenizi sağlar.
+
+$match — filtreleme aşaması
+Sadece şu kritere uyanları al demek. SQL'deki WHERE gibi 
+{ $match: { type: 'expense' } } // sadece giderleri al
+
+$group — gruplama aşaması
+Verileri belirli bir alana göre grupla demek. SQL'deki GROUP BY gibi.
+{ $group: { _id: '$category', total: { $sum: '$amount' } } } Bu, "her farklı category değeri için ayrı bir grup oluştur, her grubun toplam amount'unu hesapla" demek.
+
+$sum — toplama işlemi
+Bir grup içindeki değerleri toplar.
+
+{ $sum: '$amount' } // amount alanlarını topla
+
+aggregate ile find arasındaki fark
+find, koleksiyondaki verileri doğrudan filtreleyip çağırmak için kullanılırken; aggregate, veriyi aşamalı olarak işleyen, şekillendiren, gruplayan ve karmaşık hesaplamalar (ortalama, toplam alma vb.) yapan bir pipeline (boru hattı) mekanizmasıdır
+
+find: Basit sorgular, filtrelemeler ve veri çekme işlemleri için optimize edilmiştir. Belgeleri orijinal halleriyle döndürür. Doğrudan ve hızlı veri çekmek için idealdir.
+
+aggregate: Verileri çok aşamalı bir filtreden geçirip dönüştürerek işleme sokar (örn. filtrele → grupla → sırala → yeni alanlar ekle). Raporlama, veri analizi ve karmaşık veri modelleme ihtiyaçları için geliştirilmiştir.

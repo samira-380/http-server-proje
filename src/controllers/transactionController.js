@@ -68,5 +68,33 @@ const deleteTransaction = async (req, res, next) => {
     next(err);
   }
 };
+// GET /summary — toplam gelir, gider, bakiye, kategori bazlı harcama
+const getSummary = async (req, res, next) => {
+  try {
+    const totals = await Transaction.aggregate([
+      { $group: { _id: '$type', total: { $sum: '$amount' } } }
+    ]);
 
-module.exports = { createTransaction, getTransactions, getTransactionById, updateTransaction, deleteTransaction };
+    const categoryTotals = await Transaction.aggregate([
+      { $match: { type: 'expense' } },
+      { $group: { _id: '$category', total: { $sum: '$amount' } } }
+    ]);
+
+    let totalIncome = 0;
+    let totalExpense = 0;
+    totals.forEach(t => {
+      if (t._id === 'income') totalIncome = t.total;
+      if (t._id === 'expense') totalExpense = t.total;
+    });
+
+    res.status(200).json({
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense,
+      categoryBreakdown: categoryTotals
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports = { createTransaction, getTransactions, getTransactionById, updateTransaction, deleteTransaction, getSummary };
