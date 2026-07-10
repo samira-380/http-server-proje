@@ -5,7 +5,8 @@ const createTransaction = async (req, res, next) => {
   try {
     const newTransaction = new Transaction(req.body);
     const saved = await newTransaction.save();
-    res.status(201).json(saved);
+    const populated = await saved.populate('category');
+    res.status(201).json(populated);
   } catch (err) {
     next(err);
   }
@@ -14,7 +15,7 @@ const createTransaction = async (req, res, next) => {
 // GET /transactions — tüm transaction'ları getir
 const getTransactions = async (req, res, next) => {
   try {
-    const transactions = await Transaction.find();
+    const transactions = await Transaction.find().populate('category');
     res.status(200).json(transactions);
   } catch (err) {
     next(err);
@@ -24,7 +25,7 @@ const getTransactions = async (req, res, next) => {
 // GET /transactions/:id — tek transaction getir
 const getTransactionById = async (req, res, next) => {
   try {
-    const transaction = await Transaction.findById(req.params.id);
+    const transaction = await Transaction.findById(req.params.id).populate('category');
     if (!transaction) {
       const error = new Error('Transaction bulunamadı');
       error.statusCode = 404;
@@ -42,7 +43,7 @@ const updateTransaction = async (req, res, next) => {
     const updated = await Transaction.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
-    });
+    }).populate('category');
     if (!updated) {
       const error = new Error('Transaction bulunamadı');
       error.statusCode = 404;
@@ -68,6 +69,7 @@ const deleteTransaction = async (req, res, next) => {
     next(err);
   }
 };
+
 // GET /summary — toplam gelir, gider, bakiye, kategori bazlı harcama
 const getSummary = async (req, res, next) => {
   try {
@@ -77,7 +79,24 @@ const getSummary = async (req, res, next) => {
 
     const categoryTotals = await Transaction.aggregate([
       { $match: { type: 'expense' } },
-      { $group: { _id: '$category', total: { $sum: '$amount' } } }
+      { $group: { _id: '$category', total: { $sum: '$amount' } } },
+      {
+        $lookup: {
+          from: 'categories',        // Category koleksiyonunun MongoDB'deki gerçek adı (küçük harf + çoğul)
+          localField: '_id',         // gruplanmış category ID'si
+          foreignField: '_id',       // Category koleksiyonundaki _id
+          as: 'categoryInfo'
+        }
+      },
+      { $unwind: '$categoryInfo' },  // categoryInfo dizisini tek objeye açar
+      {
+        $project: {
+          _id: 0,
+          categoryId: '$_id',
+          categoryName: '$categoryInfo.name',
+          total: 1
+        }
+      }
     ]);
 
     let totalIncome = 0;
@@ -97,4 +116,5 @@ const getSummary = async (req, res, next) => {
     next(err);
   }
 };
+
 module.exports = { createTransaction, getTransactions, getTransactionById, updateTransaction, deleteTransaction, getSummary };

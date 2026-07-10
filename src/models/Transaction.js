@@ -12,9 +12,10 @@ const transactionSchema = new mongoose.Schema({
     min: [0.01, 'İşlem tutarı 0\'dan büyük olmalıdır.']
   },
   category: {
-    type: String,
-    required: [true, 'Kategori seçimi zorunludur.']
-  },
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Category',
+  required: [true, 'Kategori seçimi zorunludur.']
+},
   type: {
     type: String,
     enum: {

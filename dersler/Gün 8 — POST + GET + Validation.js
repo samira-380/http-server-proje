@@ -8,7 +8,7 @@
 // POST /transactions → "Yeni bir transaction oluştur" isteği. Kullanıcı sana bir body (JSON veri) gönderir, sen onu alıp veritabanına yazıyorsun
 
 // Bir transaction'ın geçerli sayılması için hangi kurallar gerekli? Kendi listeni çıkar.
-// Bu alan olmadan kayıt anlamsız mı? → zorunlu yap
+// Bu alan olmadan kayıt anlamsız mı? → zorunlu yap (required)
 // Bu alanın değeri sınırlı, bilinen seçeneklerden mi oluşuyor? → enum kullan
 // Mantıksal bir sınır var mı (negatif olamaz gibi)? → min/max koy
 // Kullanıcı çoğu zaman aynı değeri girecek mi? → default ile kolaylaştır
