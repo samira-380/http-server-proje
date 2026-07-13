@@ -15,8 +15,27 @@ const createTransaction = async (req, res, next) => {
 // GET /transactions — tüm transaction'ları getir
 const getTransactions = async (req, res, next) => {
   try {
-    const transactions = await Transaction.find().populate('category');
-    res.status(200).json(transactions);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const transactions = await Transaction.find()
+      .populate('category')
+      .skip(skip)
+      .limit(limit);
+
+    const totalCount = await Transaction.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(200).json({
+      transactions,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages
+      }
+    });
   } catch (err) {
     next(err);
   }

@@ -1,0 +1,57 @@
+Gün 18 — Bonus: Pagination
+
+Şu an getTransactions fonksiyonun şöyle:
+
+const transactions = await Transaction.find().populate('category');
+
+--Bu, veritabanındaki tüm kayıtları tek seferde çekiyor. Senin projende 5-10 kayıt olduğu için sorun yok, ama düşün: 10.000 kayıt olsaydı ne olurdu?
+Backend, 10.000 kaydı MongoDB'den çekip hepsini JSON'a çevirip göndermek zorunda kalır — bu, hem sunucu tarafında hem network'te ciddi yavaşlık yaratır
+
+Frontend, bu 10.000 kaydı tarayıcının hafızasına yükler — sayfa donabilir, hatta tarayıcı çökebilir
+Kullanıcı zaten 10.000 satırlık bir tabloyu kaydırıp bulamaz, bu kadar veriyi bir defada görmek anlamsız
+
+Çözüm: Pagination — veriyi küçük "sayfalar" halinde, parça parça göndermek. "Bana ilk 10 kaydı ver" gibi
+
+GET /transactions?page=1&limit=10
+
+page=1 → "1. sayfayı istiyorum"
+limit=10 → "her sayfada 10 kayıt olsun"
+
+3. Backend'de bunu nasıl karşılarız 
+
+Transaction.find().skip(X).limit(Y);
+
+.limit(Y) → "bana en fazla Y kayıt ver" (örneğin limit(10), en fazla 10 kayıt döner)
+.skip(X) → "ilk X kaydı atla, ondan sonrasını getir"
+
+skip = (page - 1) * limit
+
+Örnekle düşünelim (limit = 10):
+
+page=1 → skip = (1-1) * 10 = 0 → ilk 10 kaydı getir (0'dan 10'a kadar)
+page=2 → skip = (2-1) * 10 = 10 → 10 kaydı atla, sonraki 10'u getir (11'den 20'ye kadar)
+page=3 → skip = (3-1) * 10 = 20 → 20 kaydı atla, sonraki 10'u getir (21'den 30'a kadar)
+
+ Query parametrelerini backend'de nasıl okuruz?
+Express'te, URL'deki ?page=1&limit=10 kısmına req.query üzerinden erişiriz:
+
+--neden URL'de, body'de değil?
+
+GET istekleri, doğası gereği "bana bir şey ver, bir şeyi değiştirme" anlamına gelir — ve bu tür isteklerde parametreler geleneksel olarak URL'de taşınır, çünkü:
+
+Önbelleğe alınabilir (cacheable): Tarayıcılar ve CDN'ler, GET isteklerini URL'e göre önbellekleyebilir — aynı URL'e tekrar gidilirse, sunucuya sormadan önbellekteki cevabı verebilir. Eğer parametre body'de olsaydı, bu önbellekleme mantığı çalışmazdı.
+Paylaşılabilir/yer imine eklenebilir: http://site.com/transactions?page=2&limit=10 linkini kopyalayıp birine gönderebilirsin, tıklayınca aynı sayfayı görür. Body'de bir veri olsaydı bu mümkün olmazdı — link, sadece URL'i taşır.
+Tarayıcı geçmişi (browser history): URL'deki parametreler, tarayıcının "ileri/geri" butonlarıyla uyumlu çalışır.
+
+--Cursor-based pagination ile offset-based pagination arasındaki fark ne? Hangisi daha ölçeklenebilir?
+
+ Offset-based Pagination:
+Klasik LIMIT ve OFFSET SQL sorgularını kullanır
+
+Çalışma Mantığı: Veritabanı, istenen sayfaya gelene kadar atlanacak tüm kayıtları (örneğin 20 kaydı) tek tek okur ve ardından istenen miktardaki veriyi (10 kayıt) döner.
+
+Performans kaybı: Sayfa sayısı arttıkça OFFSET değeri de büyür. Veritabanı her defasında önceki kayıtları taramak zorunda kalır, bu da sunucu yükünü ciddi şekilde artırır.
+
+Cursor-based Pagination (İmleç Tabanlı)
+Çalışma Mantığı: Bir önceki sayfadaki son kaydın benzersiz kimliği (cursor) veritabanına iletilir. Veritabanı, bu noktadan sonrasını getirir.
+Yüksek performans: Veritabanı, ofsetli sorgulardaki gibi önceki verileri taramak zorunda kalmaz. Doğrudan ilgili noktadan okuma yapar. Milyonlarca satırlık tablolarda bile hızı sabittir.

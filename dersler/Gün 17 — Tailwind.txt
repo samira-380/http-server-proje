@@ -1,0 +1,38 @@
+Gün 17 — Tailwind
+Şu ana kadar CSS yazma şeklimiz şuydu: App.css dosyasına git, bir class ismi uydur (.dashboard-section gibi), o class'a özellikler yaz (padding: 1.5rem; background: #1a1d27;), sonra JSX'te o class'ı kullan (className="dashboard-section").
+Tailwind bu akışı tersine çeviriyor. Kendi class ismini uydurmuyorsun — Tailwind'in binlerce hazır, küçük class'ı var, her biri tek bir CSS özelliğine karşılık geliyor. Sen direkt bunları JSX içinde yan yana diziyorsun
+
+bazı classlar:
+
+flex → display: flex demek, elemanları yan yana (satır halinde) dizer
+grid → display: grid demek, ızgara (grid) düzeni kurar — flex'ten farklı olarak hem satır hem sütun kontrolü verir
+gap- → elemanlar arası boşluk (gap-2, gap-4 gibi, sayı arttıkça boşluk artar)
+p- → padding (iç boşluk) — p-4 = her yönden padding
+m- → margin (dış boşluk) — m-4 = her yönden margin
+text- → yazı ile ilgili her şey — text-lg (büyük yazı), text-red-500 (kırmızı yazı), text-center (ortalı yazı)
+bg- → arkaplan rengi — bg-gray-800 (koyu gri arkaplan)
+rounded → köşe yuvarlaklığı — rounded-lg (büyük yuvarlaklık), sadece rounded da kullanılabilir (orta yuvarlaklık)
+border → kenarlık (border) ekler — border tek başına ince gri bir çizgi ekler, border-2 daha kalın yapar
+
+sm: → ~640px ve üzeri (küçük tabletler)
+md: → ~768px ve üzeri (tabletler/küçük laptoplar)
+lg: → ~1024px ve üzeri (masaüstü)
+
+Utility-first CSS; stilleri harici CSS dosyalarında tanımlamak yerine, önceden belirlenmiş tek amaçlı yardımcı sınıfları (örn: bg-blue-500, p-4) doğrudan HTML veya bileşenlerin içerisinde birleştirerek kullanma yaklaşımıdır. Geleneksel CSS'e kıyasla geliştirme hızını artırır ve tasarım tutarlılığı sağlar.
+
+--Neden Tercih Ediliyor?
+Hızlı Geliştirme: Tasarım yaparken HTML ve CSS dosyaları arasında sürekli geçiş yapma ihtiyacını ortadan kaldırarak geliştirme döngüsünü hızlandırır.
+
+Ölçeklenebilirlik: Proje büyüdükçe CSS dosyasının da katlanarak büyümesini engeller. Sınıf havuzu sabit kaldığı için CSS şişmesi (bloat) yaşanmaz.
+
+Tasarım Tutarlılığı: Sınıflar, merkezi bir tasarım sistemine (design token) bağlı olduğundan (örn: boşluklar için 4, 8, 16 birim gibi standartlar) ekranda tutarsız tasarımlar yapma ihtimali azalır.
+
+--Geleneksel CSS'e Göre Ne Kazandırıyor? (Avantajları)
+
+İsim Bulma Yorgunluğu: Geleneksel CSS'te en çok vakit kaybedilen "bu bileşene hangi ismi versem" (örn: .card-title-wrapper-new) derdini bitirir.
+
+Daha Küçük Dosya Boyutları: Üretim (production) aşamasında kullanılmayan sınıflar budanarak nihai CSS dosyasının sadece birkaç kilobayt olması sağlanabilir.
+
+Bağımsız Değişim: Bir elementi stilize ederken yazdığınız bir sınıfın, başka bir bileşeni bozma (spesifiklik çakışması veya !important savaşları) riski neredeyse yoktur.
+
+Kolay Bakım: Stilleri değiştirmek için CSS dosyasında arama yapmak yerine, ilgili HTML etiketindeki yardımcı sınıfı değiştirmek yeterlidir.
