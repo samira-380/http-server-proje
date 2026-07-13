@@ -82,19 +82,32 @@ const getSummary = async (req, res, next) => {
       { $group: { _id: '$category', total: { $sum: '$amount' } } },
       {
         $lookup: {
-          from: 'categories',        // Category koleksiyonunun MongoDB'deki gerçek adı (küçük harf + çoğul)
-          localField: '_id',         // gruplanmış category ID'si
-          foreignField: '_id',       // Category koleksiyonundaki _id
+          from: 'categories',
+          localField: '_id',
+          foreignField: '_id',
           as: 'categoryInfo'
         }
       },
-      { $unwind: '$categoryInfo' },  // categoryInfo dizisini tek objeye açar
+      { $unwind: '$categoryInfo' },
       {
         $project: {
           _id: 0,
           categoryId: '$_id',
           categoryName: '$categoryInfo.name',
-          total: 1
+          total: 1,
+          monthlyBudgetLimit: '$categoryInfo.monthlyBudgetLimit',
+          isOverBudget: {
+  $cond: {
+    if: {
+      $and: [
+        { $gt: ['$categoryInfo.monthlyBudgetLimit', 0] },
+        { $gt: ['$total', '$categoryInfo.monthlyBudgetLimit'] }
+      ]
+    },
+    then: true,
+    else: false
+  }
+}
         }
       }
     ]);
@@ -116,5 +129,39 @@ const getSummary = async (req, res, next) => {
     next(err);
   }
 };
+// GET /transactions/export/csv — tüm transaction'ları CSV olarak indir
+const exportTransactionsCSV = async (req, res, next) => {
+  try {
+    const transactions = await Transaction.find().populate('category');
 
-module.exports = { createTransaction, getTransactions, getTransactionById, updateTransaction, deleteTransaction, getSummary };
+    // CSV başlık satırı
+    let csv = 'Tutar,Tip,Kategori,Odeme Yontemi,Tarih\n';
+
+    // Her transaction için bir satır ekle
+    transactions.forEach((t) => {
+      const row = [
+        t.amount,
+        t.type,
+        t.category?.name || '',
+        t.paymentMethod,
+        new Date(t.date).toLocaleDateString('tr-TR')
+      ].join(',');
+      csv += row + '\n';
+    });
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="transactions.csv"');
+    res.status(200).send(csv);
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports = {
+  createTransaction,
+  getTransactions,
+  getTransactionById,
+  updateTransaction,
+  deleteTransaction,
+  getSummary,
+  exportTransactionsCSV
+};
