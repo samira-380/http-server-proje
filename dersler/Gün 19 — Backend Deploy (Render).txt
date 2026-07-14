@@ -1,0 +1,30 @@
+Gün 19 — Backend Deploy (Render)
+
+1. "Deploy" ne demek?
+
+Deploy etmek, sunucunu senin bilgisayarından alıp, internete bağlı, 7/24 açık duran başka bir bilgisayara (buna "sunucu" ya da "host" deniyor) taşımak demek. Bu sayede sunucun artık senin bilgisayarın kapalı olsa bile çalışmaya devam ediyor ve dünyanın her yerinden herkes ona erişebiliyor.
+
+2. Render nedir?
+
+Render, senin kodunu alıp, onu internete bağlı bir bilgisayarda çalıştıran bir şirket/platform. Kendi sunucu donanımı almana, ayarlamana gerek kalmıyor — Render bunu senin yerine yapıyor. Sen sadece "kodum burada, çalıştır" diyorsun, Render gerisini hallediyor.
+
+3. GitHub repo'nu bağlamak neden gerekli?
+Render, kodunu nereden alacak? Senin bilgisayarından değil — GitHub'daki reponuzdan. Bu yüzden önce projenin GitHub'da olması şart (ki zaten var, http-server-proje). Render'a "bu repoyu izle" dediğinde, her push yaptığında Render otomatik olarak yeni kodu alıp yeniden deploy edebiliyor.
+
+4. Environment variable (ortam değişkeni) ne demek?
+Kodunun içinde bazı gizli ya da ortama göre değişen bilgiler vardır — mesela veritabanı şifresi, bağlantı adresi gibi. Bunları direkt kodun içine yazmak kötü bir pratik, çünkü:
+
+GitHub'a push ettiğinde herkes görebilir (özellikle repo public ise, seninki gibi).
+Kendi bilgisayarında test ederken kullandığın veritabanı ile, gerçek (canlı) ortamda kullanacağın veritabanı farklı olabilir.
+
+MONGO_URI nedir, neden eksik olursa hata verir?
+MONGO_URI, MongoDB veritabanına bağlanmak için kullanılan adres/bağlantı bilgisi — kullanıcı adı, şifre, veritabanı adresi gibi bilgileri içeren uzun bir metin. Kodun, veritabanına bağlanmak için bu adrese ihtiyaç duyuyor.
+Eğer bu bilgiyi Render'a girmeyi unutursan, kodun çalışırken "ben nereye bağlanacağım, adres yok" der ve bağlantı hatası verir. Bu yüzden Render dashboard'undan bu değeri mutlaka girmen gerekiyor.
+
+ MongoDB Atlas IP whitelist nedir?
+
+ MongoDB Atlas (veritabanını barındırdığın yer), güvenlik için "hangi bilgisayarlar bana bağlanabilir" diye bir liste tutuyor (buna whitelist — beyaz liste deniyor). Varsayılan olarak, hiçbir bilgisayarın bağlanmasına izin vermiyor, sen izin verdiğin IP adreslerini eklemen gerekiyor.
+Sorun şu: senin kendi bilgisayarının IP'si belli, ama Render'daki sunucunun IP'si senin bilinmediğin, değişebilen bir adres. Bu yüzden Render'ın IP'sini tek tek eklemek yerine, geliştirme/öğrenme aşamasında genelde şu kullanılır:
+0.0.0.0/0
+Bu, "her IP adresine izin ver" demek — yani whitelist'i tamamen açmak. (Not: gerçek, ciddi projelerde bu güvenlik açısından ideal değil, ama öğrenme ve küçük projeler için yaygın bir pratik.)
+Eğer bunu yapmazsan, Render'daki sunucun MongoDB'ye bağlanmaya çalışır ama Atlas "seni tanımıyorum, giremezsin" der — bu da bağlantı zaman aşımı (timeout) hatası olarak karşına çıkar, yani sunucun uzun süre bekler, cevap gelmez, sonunda hata verir.

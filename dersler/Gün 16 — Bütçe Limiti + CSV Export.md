@@ -12,7 +12,7 @@ Neden burada olmalı? Sayfa yenilenmesine gerek kalmadan kullanıcıyı uyararak
 
 Örnek: MDN Web Docs standartlarına göre form validasyonları yapılarak kullanıcıya anında kırmızı hata mesajları gösterilebilir.
 
-2. Backend (Sunucu): Güvenlik ve Veri BütünlüğüBackend'deki doğrulama ise asıl iş kuralını (business logic) uygulayan ve sistemi koruyan katmandır.
+2. Backend (Sunucu): Güvenlik ve Veri Bütünlüğü Backend'deki doğrulama ise asıl iş kuralını (business logic) uygulayan ve sistemi koruyan katmandır.
 
 Neden burada olmalı? Frontend'deki kontroller her zaman manipüle edilebilir (kullanıcı tarayıcıda JavaScript'i kapatabilir veya API isteklerine müdahale edebilir). Veri tabanına hatalı veya kötü niyetli verinin girmesini engellemek için karşılaştırma mutlaka sunucu tarafında da yapılmalıdır.
 
@@ -44,7 +44,7 @@ CSV neden hâlâ bu kadar yaygın — JSON'a kıyasla avantajı ne?
 
 JSON, API'ler ve web servisleri üzerinden veri alışverişi (data interchange) yapmak için altından kalkılamaz bir standarttır. Ancak finans, pazarlama, makine öğrenimi ve veri bilimi gibi alanlarda karmaşık iç içe objelere (nested objects) nadiren ihtiyaç duyulur. Veriler zaten geleneksel satır/sütun mantığına uygun olduğu için, CSV onlarca yıldır koruduğu pratikliğiyle hâlâ birincil tercih konumundadır. Ama "düz tablo, insan okusun, Excel'de açsın" senaryosunda CSV kazanır.
 
-Content-Type ve Content-Disposition header'ları. Tarayıcıya "bu dosyayı indir" nasıl söylersin?
+Content-Type ve Content-Disposition header'ları. 
  
  Content-Type: Verinin gövdesinde (body) bulunan kaynağın türünü ve biçimini tanımlayan standart MIME (Multipurpose Internet Mail Extensions) türüdür. Sunucunun veya tarayıcının veriyi nasıl yorumlaması gerektiğini belirler.
 

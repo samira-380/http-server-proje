@@ -25,6 +25,8 @@ app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;
 
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Server ${PORT} portunda çalışıyor`);
+  console.log(`Sunucu çalışıyor: http://localhost:${PORT}`);
 });
