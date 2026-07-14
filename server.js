@@ -16,7 +16,9 @@ connectDB();
 
 app.use('/api', transactionRoutes);
 app.use('/api', categoryRoutes);
-
+app.get('/ping', (req, res) => {
+  res.json({ status: 'ok' });
+});
 app.get('/', (req, res) => {
   res.send('Server çalışıyor 🚀');
 });
